@@ -9,6 +9,7 @@
 #include <string.h>
 #include <stdbool.h>
 #include <time.h>
+#include <signal.h>
 
 #define THINKGEAR_SYNC 0xAA
 #define THINKGEAR_MAX_DATA_SIZE 169
@@ -21,15 +22,33 @@
 #define PAGE0_ENABLE_RAW_WAVE		0b00000100
 #define PAGE0_ENABLE_HIGH_BAUD_RATE	0b00001000
 
+int serial;
+FILE * output;
+
+void sigint_handler(int s)
+{
+	// Finish
+	printf("\b\bOperation succeed.\n");
+	close(serial);
+	fclose(output);
+	exit(0);
+}
+
 int main(int argc, char* argv[])
 {
 	// argv[1] = Port
 	// argv[2] = Output file
-	printf("usage: %s bluetooth_serial_port output_file\n", argv[0]);
-
+	if (argc != 3)
+	{
+		printf("usage: %s bluetooth_serial_port output_file\n", argv[0]);
+		exit(4);
+	}
+	
+	signal (SIGINT,sigint_handler);
+	
 	// Open the port
 	printf("Opening port.\n");
-	int serial = open(argv[1], O_RDWR);
+	serial = open(argv[1], O_RDWR);
 	if (serial == -1)
 	{
 		printf("Cannot open the port:%s, errno = %i.\n", argv[1], errno);
@@ -37,16 +56,16 @@ int main(int argc, char* argv[])
 	}
 
 	// Open the file
-	FILE * output = fopen(argv[2], "rw");
+	output = fopen(argv[2], "w+");
 	if (!output)
 	{
-		printf("Cannot open the file%s, errno = %i.\n", argv[2], errno);
+		printf("Cannot open the file:%s, errno = %i.\n", argv[2], errno);
 		exit(2);
 	}
 	
 	// Write csv header
 	fprintf(output, "timestampMs,poorSignal,eegRawValue,eegRawValueVolts,attention,meditation,blinkStrength,delta,theta,alphaLow,alphaHigh,betaLow,betaHigh,gammaLow,gammaMid,tagEvent,location\n");
-
+	
 	// Send control byte
 	printf("Sending control byte.\n");
 	unsigned char command = 0x00;
@@ -232,12 +251,6 @@ int main(int argc, char* argv[])
 			}
 		}
 	}
-
-	// Finish
-	printf("Operation succeed.\n");
-	close(serial);
-	fclose(output);
-	exit(0);
 	return 0;
 }
 
