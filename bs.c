@@ -32,7 +32,7 @@ int main(int argc, char* argv[])
 	int serial = open(argv[1], O_RDWR);
 	if (serial == -1)
 	{
-		printf("Cannot open the port.\n");
+		printf("Cannot open the port:%s, errno = %i.\n", argv[1], errno);
 		exit(1);
 	}
 
@@ -40,7 +40,7 @@ int main(int argc, char* argv[])
 	FILE * output = fopen(argv[2], "rw");
 	if (!output)
 	{
-		printf("Cannot open the file.\n");
+		printf("Cannot open the file%s, errno = %i.\n", argv[2], errno);
 		exit(2);
 	}
 	
