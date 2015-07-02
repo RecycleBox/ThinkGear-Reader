@@ -8,7 +8,7 @@ git clone https://github.com/MakiseKurisu/ThinkGear-Reader.git
 
 cd ThinkGear-Reader/
 
-gcc -std=c99 bs.c -o bs
+make
 
 # Usage
 
