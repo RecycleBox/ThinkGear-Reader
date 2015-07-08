@@ -38,9 +38,9 @@ int main(int argc, char* argv[])
 {
 	// argv[1] = Port
 	// argv[2] = Output file
-	if (argc != 3)
+	if ((argc != 2) || (argc != 3))
 	{
-		printf("usage: %s bluetooth_serial_port output_file\n", argv[0]);
+		printf("usage: %s <bluetooth_serial_port> [output_file]\n", argv[0]);
 		exit(4);
 	}
 	
@@ -56,7 +56,15 @@ int main(int argc, char* argv[])
 	}
 
 	// Open the file
-	output = fopen(argv[2], "w+");
+	if (argc == 3)
+	{
+		output = fopen(argv[2], "w+");
+	}
+	else
+	{
+		output = fopen("/dev/null", "w+");
+	}
+	}
 	if (!output)
 	{
 		printf("Cannot open the file:%s, errno = %i.\n", argv[2], errno);
