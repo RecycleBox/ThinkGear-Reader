@@ -64,7 +64,7 @@ int main(int argc, char* argv[])
 	{
 		output = fopen("/dev/null", "w+");
 	}
-	}
+	
 	if (!output)
 	{
 		printf("Cannot open the file:%s, errno = %i.\n", argv[2], errno);
