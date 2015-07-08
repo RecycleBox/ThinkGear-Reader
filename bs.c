@@ -38,7 +38,7 @@ int main(int argc, char* argv[])
 {
 	// argv[1] = Port
 	// argv[2] = Output file
-	if ((argc != 2) || (argc != 3))
+	if ((argc != 2) && (argc != 3))
 	{
 		printf("usage: %s <bluetooth_serial_port> [output_file]\n", argv[0]);
 		exit(4);
